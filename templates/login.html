@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Login – NMIT Alumni Portal{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="bi bi-mortarboard-fill"></i></div>
+    <h4 class="text-center text-navy mb-1">Welcome Back</h4>
+    <p class="text-center text-muted small mb-4">Sign in to your NMIT Alumni Portal account</p>
+
+    <form method="POST" action="{{ url_for('login') }}">
+      <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white"><i class="bi bi-envelope text-muted"></i></span>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required autofocus/>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Password</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white"><i class="bi bi-lock text-muted"></i></span>
+          <input type="password" name="password" id="pwd" class="form-control" placeholder="Enter password" required/>
+          <button type="button" class="input-group-text bg-white border-start-0" onclick="togglePwd()">
+            <i class="bi bi-eye text-muted" id="eye-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-nmit w-100 py-2 mb-3">Sign In</button>
+    </form>
+
+    <p class="text-center text-muted small mb-0">
+      Don't have an account? <a href="{{ url_for('register') }}" class="text-gold fw-500">Register here</a>
+    </p>
+
+    <hr class="my-3"/>
+    <p class="text-center text-muted" style="font-size:.78rem;">
+      <strong>Demo Credentials:</strong><br/>
+      Admin: admin@nmit.ac.in / admin123<br/>
+      Alumni: priya@example.com / alumni123<br/>
+      Student: ananya@example.com / student123
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePwd() {
+  const pwd = document.getElementById('pwd');
+  const icon = document.getElementById('eye-icon');
+  if (pwd.type === 'password') {
+    pwd.type = 'text'; icon.className = 'bi bi-eye-slash text-muted';
+  } else {
+    pwd.type = 'password'; icon.className = 'bi bi-eye text-muted';
+  }
+}
+</script>
+{% endblock %}

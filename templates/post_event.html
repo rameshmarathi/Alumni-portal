@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Post Event – NMIT{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width:680px;">
+  <div class="nmit-card p-4 p-md-5">
+    <h4 class="text-navy mb-1"><i class="bi bi-calendar-plus me-2 text-gold"></i>Post an Event</h4>
+    <p class="text-muted small mb-4">Announce reunions, tech talks, or any campus event.</p>
+
+    <form method="POST" action="{{ url_for('post_event') }}">
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Event Title <span class="text-danger">*</span></label>
+          <input type="text" name="title" class="form-control" placeholder="e.g. Annual Alumni Meet 2024" required/>
+        </div>
+
+        <div class="col-sm-6">
+          <label class="form-label">Date & Time <span class="text-danger">*</span></label>
+          <input type="datetime-local" name="date" class="form-control" required/>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Venue</label>
+          <input type="text" name="venue" class="form-control" placeholder="e.g. NMIT Auditorium"/>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Description <span class="text-danger">*</span></label>
+          <textarea name="description" class="form-control" rows="4"
+            placeholder="Tell people what this event is about…" required></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Image URL <small class="text-muted">(optional)</small></label>
+          <input type="url" name="image_url" class="form-control" placeholder="https://…"/>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button type="submit" class="btn btn-nmit px-4">Post Event</button>
+          <a href="{{ url_for('events') }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

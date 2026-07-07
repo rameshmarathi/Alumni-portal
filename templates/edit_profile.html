@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile – NMIT{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width:700px;">
+  <div class="nmit-card p-4 p-md-5">
+    <h4 class="text-navy mb-1"><i class="bi bi-pencil-square me-2 text-gold"></i>Edit Alumni Profile</h4>
+    <p class="text-muted small mb-4">Keep your profile up to date so students and peers can find you.</p>
+
+    <form method="POST" action="{{ url_for('edit_alumni_profile') }}">
+      <div class="row g-3">
+
+        <div class="col-sm-6">
+          <label class="form-label">Graduation Batch</label>
+          <input type="text" name="batch" class="form-control" value="{{ profile["batch"] }}" placeholder="e.g. 2020" required/>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Department</label>
+          <select name="department" class="form-select">
+            {% set depts = ['Computer Science & Engineering','Electronics & Communication',
+                            'Information Science & Engineering','Mechanical Engineering',
+                            'Civil Engineering','Electrical Engineering','Biotechnology','MBA','MCA'] %}
+            {% for d in depts %}
+            <option value="{{ d }}" {% if d == profile["department"] %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-sm-6">
+          <label class="form-label">Current Company</label>
+          <input type="text" name="company" class="form-control" value="{{ profile["company"] or '' }}" placeholder="e.g. Google"/>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Designation / Role</label>
+          <input type="text" name="designation" class="form-control" value="{{ profile["designation"] or '' }}" placeholder="e.g. Software Engineer"/>
+        </div>
+
+        <div class="col-sm-6">
+          <label class="form-label">Location</label>
+          <input type="text" name="location" class="form-control" value="{{ profile["location"] or '' }}" placeholder="e.g. Bangalore"/>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">LinkedIn URL</label>
+          <input type="url" name="linkedin" class="form-control" value="{{ profile["linkedin"] or '' }}" placeholder="https://linkedin.com/in/…"/>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Bio</label>
+          <textarea name="bio" class="form-control" rows="4" placeholder="Tell students about yourself, your journey, and advice you'd give…">{{ profile["bio"] or '' }}</textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2 mt-2">
+          <button type="submit" class="btn btn-nmit px-4">Save Changes</button>
+          <a href="{{ url_for('alumni_profile', user_id=current_user["id"]) }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

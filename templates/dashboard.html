@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard – NMIT Alumni Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Welcome banner -->
+  <div class="welcome-banner">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div>
+        <p class="mb-1 small" style="opacity:.75;">
+          <i class="bi bi-calendar3 me-1"></i>
+          {% set now = namespace(val="") %}
+          Good Day
+        </p>
+        <h4>Welcome back, {{ current_user["name"].split()[0] }}! 👋</h4>
+        <span class="role-badge badge-{{ current_user["role"] }}">
+          {{ current_user["role"] | capitalize }}
+        </span>
+      </div>
+      {% if current_user["role"] == 'alumni' %}
+        <a href="{{ url_for('alumni_profile', user_id=current_user["id"]) }}" class="btn btn-nmit">
+          <i class="bi bi-person me-1"></i>View My Profile
+        </a>
+      {% elif current_user["role"] == 'admin' %}
+        <a href="{{ url_for('admin_panel') }}" class="btn btn-nmit">
+          <i class="bi bi-shield-check me-1"></i>Admin Panel
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="dash-stat-card">
+        <div class="d-flex align-items-center gap-3">
+          <div class="dash-stat-icon navy"><i class="bi bi-people"></i></div>
+          <div>
+            <div class="fw-700 fs-4">{{ alumni_count }}</div>
+            <div class="text-muted small">Alumni</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="dash-stat-card">
+        <div class="d-flex align-items-center gap-3">
+          <div class="dash-stat-icon blue"><i class="bi bi-person-badge"></i></div>
+          <div>
+            <div class="fw-700 fs-4">{{ student_count }}</div>
+            <div class="text-muted small">Students</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="dash-stat-card">
+        <div class="d-flex align-items-center gap-3">
+          <div class="dash-stat-icon gold"><i class="bi bi-briefcase"></i></div>
+          <div>
+            <div class="fw-700 fs-4">{{ job_count }}</div>
+            <div class="text-muted small">Jobs Posted</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="dash-stat-card">
+        <div class="d-flex align-items-center gap-3">
+          <div class="dash-stat-icon green"><i class="bi bi-calendar-event"></i></div>
+          <div>
+            <div class="fw-700 fs-4">{{ event_count }}</div>
+            <div class="text-muted small">Events</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Recent Jobs -->
+    <div class="col-lg-6">
+      <div class="nmit-card p-0 h-100">
+        <div class="d-flex justify-content-between align-items-center p-4 pb-2">
+          <h6 class="fw-700 mb-0 text-navy"><i class="bi bi-briefcase-fill me-2 text-gold"></i>Recent Jobs</h6>
+          <a href="{{ url_for('jobs') }}" class="btn btn-sm btn-outline-nmit">View All</a>
+        </div>
+        <div class="px-3 pb-3">
+          {% for job in recent_jobs %}
+          <a href="{{ url_for('job_detail', job_id=job.id) }}" class="text-decoration-none">
+            <div class="nmit-card job-card p-3 mb-2">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="fw-600 text-dark small">{{ job.title }}</div>
+                  <div class="text-muted" style="font-size:.8rem;">
+                    <i class="bi bi-building me-1"></i>{{ job.company }}
+                  </div>
+                </div>
+                <span class="job-type-badge job-type-{{ job.job_type|lower|replace(' ','-')|replace('-time','time') }}">
+                  {{ job.job_type }}
+                </span>
+              </div>
+            </div>
+          </a>
+          {% else %}
+          <p class="text-muted text-center py-3 small">No jobs posted yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="col-lg-6">
+      <div class="nmit-card p-0 h-100">
+        <div class="d-flex justify-content-between align-items-center p-4 pb-2">
+          <h6 class="fw-700 mb-0 text-navy"><i class="bi bi-calendar-event-fill me-2 text-gold"></i>Upcoming Events</h6>
+          <a href="{{ url_for('events') }}" class="btn btn-sm btn-outline-nmit">View All</a>
+        </div>
+        <div class="px-3 pb-3">
+          {% for event in recent_events %}
+          <a href="{{ url_for('event_detail', event_id=event.id) }}" class="text-decoration-none">
+            <div class="nmit-card p-3 mb-2">
+              <div class="d-flex gap-3 align-items-center">
+                <div class="event-date-box flex-shrink-0">
+                  <div class="event-date-day">{{ event['date']|isodate|datefmt('%d') }}</div>
+                  <div class="event-date-month">{{ event['date']|isodate|datefmt('%b') }}</div>
+                </div>
+                <div>
+                  <div class="fw-600 text-dark small">{{ event.title }}</div>
+                  {% if event.venue %}
+                  <div class="text-muted" style="font-size:.8rem;">
+                    <i class="bi bi-geo-alt me-1"></i>{{ event.venue }}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </a>
+          {% else %}
+          <p class="text-muted text-center py-3 small">No upcoming events.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+
+  <!-- Quick Action buttons based on role -->
+  <div class="row g-3 mt-2">
+    <div class="col-12">
+      <h6 class="fw-700 text-navy mb-3"><i class="bi bi-lightning-charge me-2 text-gold"></i>Quick Actions</h6>
+      <div class="d-flex flex-wrap gap-2">
+        <a href="{{ url_for('alumni_directory') }}" class="btn btn-outline-nmit">
+          <i class="bi bi-people me-1"></i>Browse Alumni
+        </a>
+        <a href="{{ url_for('jobs') }}" class="btn btn-outline-nmit">
+          <i class="bi bi-briefcase me-1"></i>Explore Jobs
+        </a>
+        <a href="{{ url_for('events') }}" class="btn btn-outline-nmit">
+          <i class="bi bi-calendar me-1"></i>View Events
+        </a>
+        {% if current_user["role"] in ('alumni','admin') %}
+        <a href="{{ url_for('post_job') }}" class="btn btn-nmit">
+          <i class="bi bi-plus-circle me-1"></i>Post a Job
+        </a>
+        <a href="{{ url_for('post_event') }}" class="btn btn-nmit">
+          <i class="bi bi-plus-circle me-1"></i>Post an Event
+        </a>
+        {% endif %}
+        {% if current_user["role"] == 'alumni' %}
+        <a href="{{ url_for('edit_alumni_profile') }}" class="btn btn-outline-nmit">
+          <i class="bi bi-pencil me-1"></i>Edit Profile
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

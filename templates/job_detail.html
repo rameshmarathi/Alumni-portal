@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ job['title'] }} – NMIT Jobs{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width:760px;">
+  <a href="{{ url_for('jobs') }}" class="btn btn-outline-secondary btn-sm mb-4">
+    <i class="bi bi-arrow-left me-1"></i>Back to Jobs
+  </a>
+
+  <div class="nmit-card job-card p-4 p-md-5">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+      <div>
+        <h3 class="text-navy mb-1">{{ job['title'] }}</h3>
+        <p class="text-muted mb-0">
+          <i class="bi bi-building me-2"></i>{{ job['company'] }}
+          {% if job['location'] %}<span class="mx-2">·</span><i class="bi bi-geo-alt me-1"></i>{{ job['location'] }}{% endif %}
+        </p>
+      </div>
+      <span class="job-type-badge job-type-{{ job['job_type']|lower|replace(' ','-') }} fs-6">{{ job['job_type'] }}</span>
+    </div>
+
+    <div class="mb-4">
+      <h6 class="fw-700 text-navy">About This Role</h6>
+      <p class="text-muted" style="line-height:1.8; white-space:pre-line;">{{ job['description'] }}</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6">
+        <div class="nmit-card bg-light border-0 p-3">
+          <div class="small text-muted">Posted By</div>
+          <div class="fw-600">{{ job['poster_name'] }}</div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="nmit-card bg-light border-0 p-3">
+          <div class="small text-muted">Posted On</div>
+          <div class="fw-600">{{ job['posted_at'] | datefmt('%d %B %Y') }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-3 flex-wrap">
+      {% if job['apply_link'] %}
+      <a href="{{ job['apply_link'] }}" target="_blank" class="btn btn-nmit px-4">
+        <i class="bi bi-send me-1"></i>Apply Now
+      </a>
+      {% endif %}
+      <a href="{{ url_for('alumni_profile', user_id=job['posted_by']) }}" class="btn btn-outline-nmit">
+        <i class="bi bi-person me-1"></i>View Poster's Profile
+      </a>
+      {% if current_user["id"] == job['posted_by'] or current_user["role"] == 'admin' %}
+      <form method="POST" action="{{ url_for('delete_job', job_id=job['id']) }}"
+            onsubmit="return confirm('Delete this job?')" class="ms-auto">
+        <button class="btn btn-outline-danger"><i class="bi bi-trash me-1"></i>Delete</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

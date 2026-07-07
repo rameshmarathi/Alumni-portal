@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Register – NMIT Alumni Portal{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper py-5">
+  <div class="auth-card" style="max-width:560px;">
+    <div class="auth-logo"><i class="bi bi-person-plus-fill"></i></div>
+    <h4 class="text-center text-navy mb-1">Create Account</h4>
+    <p class="text-center text-muted small mb-4">Join the NMIT Alumni Network today</p>
+
+    <form method="POST" action="{{ url_for('register') }}" id="regForm">
+
+      <!-- Role selector tabs -->
+      <div class="mb-4">
+        <label class="form-label">I am a</label>
+        <div class="d-flex gap-2">
+          <input type="radio" class="btn-check" name="role" id="role-student" value="student" checked/>
+          <label class="btn btn-outline-secondary flex-fill" for="role-student">
+            <i class="bi bi-person-badge me-1"></i>Student
+          </label>
+
+          <input type="radio" class="btn-check" name="role" id="role-alumni" value="alumni"/>
+          <label class="btn btn-outline-secondary flex-fill" for="role-alumni">
+            <i class="bi bi-mortarboard me-1"></i>Alumni
+          </label>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Full Name</label>
+          <input type="text" name="name" class="form-control" placeholder="e.g. Priya Sharma" required/>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required/>
+        </div>
+
+        <!-- Alumni-only fields – shown/hidden via JS -->
+        <div class="col-sm-6 alumni-field d-none">
+          <label class="form-label">Graduation Batch</label>
+          <input type="text" name="batch" class="form-control" placeholder="e.g. 2020"/>
+        </div>
+        <div class="col-sm-6 alumni-field d-none">
+          <label class="form-label">Department</label>
+          <select name="department" class="form-select">
+            <option value="">Select…</option>
+            <option>Computer Science & Engineering</option>
+            <option>Electronics & Communication</option>
+            <option>Information Science & Engineering</option>
+            <option>Mechanical Engineering</option>
+            <option>Civil Engineering</option>
+            <option>Electrical Engineering</option>
+            <option>Biotechnology</option>
+            <option>MBA</option>
+            <option>MCA</option>
+          </select>
+        </div>
+
+        <div class="col-sm-6">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" id="pwd" class="form-control" placeholder="Min 6 characters" required minlength="6"/>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" name="confirm_password" id="confirm" class="form-control" placeholder="Repeat password" required/>
+        </div>
+
+        <div class="col-12 mt-1">
+          <button type="submit" class="btn btn-nmit w-100 py-2">Create Account</button>
+        </div>
+      </div>
+    </form>
+
+    <p class="text-center text-muted small mt-3 mb-0">
+      Already have an account? <a href="{{ url_for('login') }}" class="text-gold fw-500">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Show / hide alumni-only fields when role radio changes
+  document.querySelectorAll('input[name="role"]').forEach(r => {
+    r.addEventListener('change', function() {
+      const fields = document.querySelectorAll('.alumni-field');
+      fields.forEach(f => f.classList.toggle('d-none', this.value !== 'alumni'));
+    });
+  });
+</script>
+{% endblock %}

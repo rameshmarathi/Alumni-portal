@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}{{ user["name"] }} – NMIT Alumni{% endblock %}
+
+{% block content %}
+
+<!-- Profile Banner -->
+<div class="profile-banner">
+  <div class="container">
+    <div class="d-flex align-items-center gap-4 flex-wrap">
+      <div class="profile-avatar">{{ user["name"][0].upper() }}</div>
+      <div>
+        <h3 class="mb-1">{{ user["name"] }}</h3>
+        <p class="mb-1" style="opacity:.85;">
+          {{ profile["designation"] or '' }}
+          {% if profile["designation"] and profile["company"] %} at {% endif %}
+          {{ profile["company"] or '' }}
+        </p>
+        <div class="d-flex flex-wrap gap-3 small" style="opacity:.75;">
+          {% if profile["location"] %}
+          <span><i class="bi bi-geo-alt me-1"></i>{{ profile["location"] }}</span>
+          {% endif %}
+          <span><i class="bi bi-mortarboard me-1"></i>Batch of {{ profile["batch"] }}</span>
+        </div>
+      </div>
+      {% if current_user["id"] == user["id"] %}
+      <div class="ms-auto">
+        <a href="{{ url_for('edit_alumni_profile') }}" class="btn btn-nmit">
+          <i class="bi bi-pencil me-1"></i>Edit Profile
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row g-4">
+    <!-- Left sidebar -->
+    <div class="col-lg-4">
+      <div class="nmit-card p-4 mb-3">
+        <h6 class="fw-700 text-navy mb-3">Details</h6>
+        <ul class="list-unstyled small mb-0">
+          <li class="mb-2"><i class="bi bi-diagram-3 me-2 text-gold"></i><strong>Department:</strong> {{ profile["department"] }}</li>
+          <li class="mb-2"><i class="bi bi-mortarboard me-2 text-gold"></i><strong>Batch:</strong> {{ profile["batch"] }}</li>
+          {% if profile["company"] %}
+          <li class="mb-2"><i class="bi bi-building me-2 text-gold"></i><strong>Company:</strong> {{ profile["company"] }}</li>
+          {% endif %}
+          {% if profile["designation"] %}
+          <li class="mb-2"><i class="bi bi-person-workspace me-2 text-gold"></i><strong>Role:</strong> {{ profile["designation"] }}</li>
+          {% endif %}
+          {% if profile["location"] %}
+          <li class="mb-2"><i class="bi bi-geo-alt me-2 text-gold"></i><strong>Location:</strong> {{ profile["location"] }}</li>
+          {% endif %}
+        </ul>
+        {% if profile["linkedin"] %}
+        <a href="{{ profile["linkedin"] }}" target="_blank" class="btn btn-outline-nmit btn-sm w-100 mt-3">
+          <i class="bi bi-linkedin me-1"></i>LinkedIn Profile
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right content -->
+    <div class="col-lg-8">
+      {% if profile["bio"] %}
+      <div class="nmit-card p-4 mb-3">
+        <h6 class="fw-700 text-navy mb-3">About</h6>
+        <p class="text-muted mb-0" style="line-height:1.7;">{{ profile["bio"] }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Jobs posted by this alumni -->
+      {% if user.jobs %}
+      <div class="nmit-card p-4">
+        <h6 class="fw-700 text-navy mb-3">Jobs Posted</h6>
+        {% for job in user.jobs %}
+        <div class="nmit-card job-card p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <a href="{{ url_for('job_detail', job_id=job.id) }}" class="fw-600 text-dark text-decoration-none">{{ job.title }}</a>
+              <div class="text-muted small">{{ job.company }} {% if job.location %}· {{ job.location }}{% endif %}</div>
+            </div>
+            <span class="job-type-badge job-type-{{ job.job_type|lower|replace(' ','-') }}">{{ job.job_type }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

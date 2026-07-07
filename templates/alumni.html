@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Alumni Directory – NMIT{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="container">
+    <h2><i class="bi bi-people-fill me-3"></i>Alumni Directory</h2>
+    <p class="mb-0 mt-1" style="opacity:.75;">Discover and connect with NMIT graduates around the world</p>
+  </div>
+</div>
+
+<div class="container py-4">
+
+  <!-- Search & Filter -->
+  <div class="search-bar mb-4">
+    <form method="GET" action="{{ url_for('alumni_directory') }}" class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small fw-500">Search by Name</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" name="search" class="form-control" placeholder="e.g. Priya Sharma" value="{{ search }}"/>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small fw-500">Batch Year</label>
+        <select name="batch" class="form-select">
+          <option value="">All Batches</option>
+          {% for b in all_batches %}
+          <option value="{{ b }}" {% if b == batch %}selected{% endif %}>{{ b }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-500">Department</label>
+        <select name="department" class="form-select">
+          <option value="">All Departments</option>
+          {% for d in all_depts %}
+          <option value="{{ d }}" {% if d == department %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small fw-500">Company</label>
+        <input type="text" name="company" class="form-control" placeholder="e.g. Google" value="{{ company }}"/>
+      </div>
+      <div class="col-md-1">
+        <button type="submit" class="btn btn-nmit w-100">
+          <i class="bi bi-filter"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results count -->
+  <p class="text-muted small mb-3">
+    Showing <strong>{{ alumni|length }}</strong> alumni
+    {% if search or batch or department or company %} for your filters {% endif %}
+    &nbsp;
+    {% if search or batch or department or company %}
+    <a href="{{ url_for('alumni_directory') }}" class="text-danger small">
+      <i class="bi bi-x-circle me-1"></i>Clear Filters
+    </a>
+    {% endif %}
+  </p>
+
+  <!-- Alumni Cards Grid -->
+  {% if alumni %}
+  <div class="row g-4">
+    {% for profile in alumni %}
+    <div class="col-sm-6 col-lg-4">
+      <div class="nmit-card alumni-card p-4 h-100">
+        <div class="d-flex gap-3 mb-3">
+          <div class="avatar-lg">{{ profile['name'][0].upper() }}</div>
+          <div>
+            <h6 class="fw-700 mb-0">{{ profile['name'] }}</h6>
+            <p class="text-muted small mb-1">{{ profile.designation or 'NMIT Alumni' }}</p>
+            {% if profile.company %}
+            <span class="badge bg-light text-dark border" style="font-size:.72rem;">
+              <i class="bi bi-building me-1"></i>{{ profile.company }}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="small text-muted mb-3">
+          <div><i class="bi bi-mortarboard me-2 text-gold"></i>Batch of <strong>{{ profile.batch }}</strong></div>
+          <div><i class="bi bi-diagram-3 me-2 text-gold"></i>{{ profile.department }}</div>
+          {% if profile.location %}
+          <div><i class="bi bi-geo-alt me-2 text-gold"></i>{{ profile.location }}</div>
+          {% endif %}
+        </div>
+
+        {% if profile.bio %}
+        <p class="text-muted small mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+          {{ profile.bio }}
+        </p>
+        {% endif %}
+
+        <div class="d-flex gap-2 mt-auto">
+          <a href="{{ url_for('alumni_profile', user_id=profile['user_id']) }}" class="btn btn-sm btn-outline-nmit flex-fill">
+            View Profile
+          </a>
+          {% if profile.linkedin %}
+          <a href="{{ profile.linkedin }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-linkedin"></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <!-- Empty state -->
+  <div class="text-center py-5">
+    <div style="font-size:4rem;color:#ddd;"><i class="bi bi-people"></i></div>
+    <h5 class="text-muted mt-3">No alumni found</h5>
+    <p class="text-muted small">Try adjusting your search filters.</p>
+    <a href="{{ url_for('alumni_directory') }}" class="btn btn-outline-nmit">Show All Alumni</a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

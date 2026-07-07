@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Home – NMIT Alumni Portal{% endblock %}
+
+{% block content %}
+
+<!-- ══ HERO ══ -->
+<section class="hero-section">
+  <div class="container text-center position-relative" style="z-index:1;">
+    <p class="text-uppercase fw-600 mb-2" style="color:var(--gold-light);letter-spacing:.12em;font-size:.85rem;">
+      Nitte Meenakshi Institute of Technology
+    </p>
+    <h1 class="hero-title mb-3">
+      Welcome to the<br/><span class="hero-gold">Alumni Network</span>
+    </h1>
+    <p class="hero-sub mx-auto mb-4">
+      Connect with fellow graduates, explore career opportunities, and stay connected with your alma mater.
+    </p>
+    {% if not current_user is not none %}
+    <div class="d-flex gap-3 justify-content-center">
+      <a href="{{ url_for('register') }}" class="btn btn-nmit btn-lg px-4">Get Started</a>
+      <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">Sign In</a>
+    </div>
+    {% else %}
+    <a href="{{ url_for('dashboard') }}" class="btn btn-nmit btn-lg px-4">Go to Dashboard</a>
+    {% endif %}
+
+    <!-- Stats row -->
+    <div class="row g-3 mt-5 justify-content-center">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">{{ alumni_count }}</div>
+          <div class="stat-label">Alumni</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">{{ student_count }}</div>
+          <div class="stat-label">Students</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">{{ job_count }}</div>
+          <div class="stat-label">Jobs Posted</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">{{ events|length }}</div>
+          <div class="stat-label">Events</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Everything in One Place</h2>
+      <div class="section-divider mx-auto"></div>
+      <p class="text-muted">Your complete platform to connect, grow, and give back.</p>
+    </div>
+    <div class="row g-4">
+      {% set features = [
+        ('bi-people-fill','Alumni Directory','Find and connect with graduates from every department and batch.','navy'),
+        ('bi-briefcase-fill','Job Portal','Discover opportunities posted by alumni working at top companies.','gold'),
+        ('bi-calendar-event-fill','Events','Stay updated on reunions, tech talks, and networking events.','navy'),
+        ('bi-chat-dots-fill','Community','A thriving network of professionals ready to mentor and collaborate.','gold'),
+      ] %}
+      {% for icon, title, desc, color in features %}
+      <div class="col-sm-6 col-lg-3">
+        <div class="nmit-card p-4 h-100 text-center">
+          <div class="mb-3" style="font-size:2.2rem;color:var(--{{ color }});">
+            <i class="bi {{ icon }}"></i>
+          </div>
+          <h5 class="fw-600">{{ title }}</h5>
+          <p class="text-muted small mb-0">{{ desc }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ══ UPCOMING EVENTS ══ -->
+{% if events %}
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="section-title mb-1">Upcoming Events</h2>
+        <div class="section-divider"></div>
+      </div>
+      {% if current_user is not none %}
+      <a href="{{ url_for('events') }}" class="btn btn-outline-nmit">View All</a>
+      {% endif %}
+    </div>
+    <div class="row g-4">
+      {% for event in events %}
+      <div class="col-md-4">
+        <div class="nmit-card card-accent-top p-4 h-100">
+          <div class="d-flex gap-3 align-items-start">
+            <div class="event-date-box">
+              <div class="event-date-day">{{ event['date']|isodate|datefmt('%d') }}</div>
+              <div class="event-date-month">{{ event['date']|isodate|datefmt('%b') }}</div>
+            </div>
+            <div>
+              <h6 class="fw-600 mb-1">{{ event.title }}</h6>
+              <p class="text-muted small mb-1">
+                <i class="bi bi-clock me-1"></i>{{ event['date']|isodate|datefmt('%I:%M %p') }}
+              </p>
+              {% if event.venue %}
+              <p class="text-muted small mb-0">
+                <i class="bi bi-geo-alt me-1"></i>{{ event.venue }}
+              </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ══ CTA ══ -->
+{% if not current_user is not none %}
+<section class="py-5">
+  <div class="container">
+    <div class="nmit-card p-5 text-center" style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);color:#fff;">
+      <h2 class="text-white mb-3">Ready to Join the Network?</h2>
+      <p class="mb-4" style="opacity:.85;">Connect with thousands of NMIT graduates worldwide.</p>
+      <a href="{{ url_for('register') }}" class="btn btn-nmit btn-lg px-5">Create Your Account</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
