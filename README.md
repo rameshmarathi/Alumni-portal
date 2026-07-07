@@ -65,7 +65,7 @@ python app.py
 
 ## 💼 Job Portal
 
-![Job Portal](Screnshots/Job_portal.jpg)
+![Job Portal](Screnshots/Job_Portal.jpg)
 
 ---
 
