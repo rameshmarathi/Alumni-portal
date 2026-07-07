@@ -59,7 +59,7 @@ python app.py
 
 ## 📸 Dashboard
 
-![Dashboard](assets/dashboard.png)
+![Dashboard](Screnshots/Dashboard.jpg)
 
 ---
 
